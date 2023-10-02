@@ -5,16 +5,19 @@ import (
 	"github.com/dassudip2001/webapp/route"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
 )
 
 func main() {
 
-	// template.ParseGlob("./views/*.html")
 
+	engine := html.New("./views", ".html")
 	// initialized the database connection
 	database.ConnectDb()
 
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		Views: engine,
+	})
 
 	//api routes setup
 	route.SetupRoutes(app)
