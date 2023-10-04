@@ -8,23 +8,27 @@ import (
 )
 
 type CreateCategoryRequest struct {
-	Name        string  `json:"name"`
+	Name string `json:"name"`
+	// Code        string  `json:"code"`
 	Description *string `json:"description"`
 }
 
 type Category struct {
-	Name        string  `json:"name"`
+	Name string `json:"name"`
+	// Code        string  `json:"code"`
 	Description *string `json:"description"`
 }
 
 // Define a function to create a response category
 func createResponseCategory(categoryModel models.Category) Category {
 	return Category{
-		Name:        categoryModel.Name,
+		Name: categoryModel.Name,
+		// Code:        categoryModel.Code,
 		Description: categoryModel.Description,
 	}
 }
 
+// create a new category
 func CreateCategory(c *fiber.Ctx) error {
 	var request CreateCategoryRequest
 
@@ -46,12 +50,13 @@ func CreateCategory(c *fiber.Ctx) error {
 		// Name already exists, return an error
 		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
 			"success": false,
-			"message": "Category name must be unique",
+			"message": "Category name   must be unique",
 		})
 	}
 
 	category := models.Category{
-		Name:        request.Name,
+		Name: request.Name,
+		// Code:        request.Code,
 		Description: request.Description, // Set Description conditionally
 	}
 
@@ -99,12 +104,19 @@ func GetCategoryById(c *fiber.Ctx) error {
 
 // update the category
 func UpdateCategory(c *fiber.Ctx) error {
+	// get the id from the url
 	id := c.Params("id")
+
+	// create a variable of type models.Category
 	var category models.Category
+
+	// check if the category is present in the database
 
 	if database.Database.Db.First(&category, id).Error != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to retrieve category"})
 	}
+
+	// return the category
 
 	if err := database.Database.Db.First(&category, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {

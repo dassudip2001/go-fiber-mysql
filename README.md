@@ -8,3 +8,7 @@ go get github.com/joho/godotenv
 gorm
 air
 fiber
+
+# install all dependency
+
+go mod tiny
