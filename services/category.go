@@ -7,37 +7,60 @@ import (
 	"gorm.io/gorm"
 )
 
-type Category struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+type CreateCategoryRequest struct {
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
 }
 
-// The `createResponsecategory` function is a helper function that takes a `models.category` object as input
-// and creates a new `category` object with the same values. It is used to convert a `models.category` object
-// to a `category` object, which is a simplified version of the category model that will be returned as a JSON
-// response.
-func createResponsecategory(categoryModel models.Category) Category {
+type Category struct {
+	Name        string  `json:"name"`
+	Description *string `json:"description"`
+}
+
+// Define a function to create a response category
+func createResponseCategory(categoryModel models.Category) Category {
 	return Category{
 		Name:        categoryModel.Name,
 		Description: categoryModel.Description,
 	}
 }
 
-// create a category
 func CreateCategory(c *fiber.Ctx) error {
-	var category models.Category
+	var request CreateCategoryRequest
 
-	if err := c.BodyParser(&category); err != nil {
+	if err := c.BodyParser(&request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
 	}
 
-	// Do not specify the ID field here
+	if request.Name == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Category name is required",
+		})
+	}
+
+	// Check if the name is already in use
+	var existingCategory models.Category
+	result := database.Database.Db.Where("name = ?", request.Name).First(&existingCategory)
+	if result.Error == nil {
+		// Name already exists, return an error
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{
+			"success": false,
+			"message": "Category name must be unique",
+		})
+	}
+
+	category := models.Category{
+		Name:        request.Name,
+		Description: request.Description, // Set Description conditionally
+	}
+
 	if err := database.Database.Db.Create(&category).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create category"})
 	}
 
-	responsecategory := createResponsecategory(category)
-	return c.Status(fiber.StatusCreated).JSON(responsecategory)
+	responseCategory := createResponseCategory(category)
+	return c.Status(fiber.StatusCreated).JSON(responseCategory)
 }
 
 // get all the category
@@ -53,9 +76,17 @@ func GetCategory(c *fiber.Ctx) error {
 
 // get category by id
 func GetCategoryById(c *fiber.Ctx) error {
+	// get the id from the url
 	id := c.Params("id")
 
+	// crete a variable of type models.Category
 	var category models.Category
+	// check if the category is present in the database
+
+	if database.Database.Db.First(&category, id).Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to retrieve category"})
+	}
+	// return the category
 	if err := database.Database.Db.Find(&category, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Category not found"})
@@ -70,6 +101,10 @@ func GetCategoryById(c *fiber.Ctx) error {
 func UpdateCategory(c *fiber.Ctx) error {
 	id := c.Params("id")
 	var category models.Category
+
+	if database.Database.Db.First(&category, id).Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to retrieve category"})
+	}
 
 	if err := database.Database.Db.First(&category, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -92,13 +127,24 @@ func UpdateCategory(c *fiber.Ctx) error {
 // delete the category
 
 func DeleteCategory(c *fiber.Ctx) error {
+	// get the id from the url
 	id := c.Params("id")
 
+	// check if id is valid
 	if id == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Category ID not provided"})
 	}
+	// crete a variable of type models.Category
 
 	var category models.Category
+
+	// check if the category is present in the database
+
+	if database.Database.Db.First(&category, id).Error != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to retrieve category"})
+	}
+
+	// return the category
 	if err := database.Database.Db.First(&category, id).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Category not found"})

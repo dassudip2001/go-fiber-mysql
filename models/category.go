@@ -8,8 +8,8 @@ import (
 
 type Category struct {
 	gorm.Model
-	Name        string `gorm:"size:255;not null;unique" json:"name"`
-	Description string `gorm:"size:255; default:null" json:"description"`
+	Name        string
+	Description *string
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
