@@ -12,7 +12,8 @@ type Product struct {
 	Description *string `json:"description"`
 	Price       int     `json:"price"`
 	Stock       int     `json:"stock"`
-	CategoryID  uint    `json:"category_id"`
+	// Status      string  `json:"status"`
+	CategoryID uint `json:"category_id"`
 }
 
 type CreateProductRequest struct {
@@ -20,7 +21,9 @@ type CreateProductRequest struct {
 	Description *string `json:"description"`
 	Price       int     `json:"price"`
 	Stock       int     `json:"stock"`
-	CategoryID  uint    `json:"category_id"`
+	// Status      string  `json:"status"`
+
+	CategoryID uint `json:"category_id"`
 }
 
 func createResponseProduct(productModel models.Product) Product {
@@ -29,7 +32,8 @@ func createResponseProduct(productModel models.Product) Product {
 		Description: productModel.Description,
 		Price:       productModel.Price,
 		Stock:       productModel.Stock,
-		CategoryID:  productModel.CategoryID,
+		// Status:      productModel.Status,
+		CategoryID: productModel.CategoryID,
 	}
 }
 
@@ -84,7 +88,8 @@ func CreateProduct(c *fiber.Ctx) error {
 		Description: request.Description, // Set Description conditionally
 		Price:       request.Price,
 		Stock:       request.Stock,
-		CategoryID:  request.CategoryID,
+		// Status:      request.Status,
+		CategoryID: request.CategoryID,
 	}
 
 	if err := database.Database.Db.Create(&product).Error; err != nil {
