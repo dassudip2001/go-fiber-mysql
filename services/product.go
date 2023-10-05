@@ -12,8 +12,7 @@ type Product struct {
 	Description *string `json:"description"`
 	Price       int     `json:"price"`
 	Stock       int     `json:"stock"`
-	// Status      string  `json:"status"`
-	CategoryID uint `json:"category_id"`
+	CategoryID  uint    `json:"category_id"`
 }
 
 type CreateProductRequest struct {
@@ -21,9 +20,7 @@ type CreateProductRequest struct {
 	Description *string `json:"description"`
 	Price       int     `json:"price"`
 	Stock       int     `json:"stock"`
-	// Status      string  `json:"status"`
-
-	CategoryID uint `json:"category_id"`
+	CategoryID  uint    `json:"category_id"`
 }
 
 func createResponseProduct(productModel models.Product) Product {
@@ -32,8 +29,7 @@ func createResponseProduct(productModel models.Product) Product {
 		Description: productModel.Description,
 		Price:       productModel.Price,
 		Stock:       productModel.Stock,
-		// Status:      productModel.Status,
-		CategoryID: productModel.CategoryID,
+		CategoryID:  productModel.CategoryID,
 	}
 }
 

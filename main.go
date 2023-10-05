@@ -10,7 +10,6 @@ import (
 
 func main() {
 
-
 	engine := html.New("./views", ".html")
 	// initialized the database connection
 	database.ConnectDb()
@@ -25,6 +24,11 @@ func main() {
 	route.SetupWebRoutes(app)
 	// product routes setup
 	route.ProductRouter(app)
+	// location routes setup
+	route.LocationRouter(app)
+
+	// add the metting room routes
+	route.RouteMettingRoom(app)
 
 	// load the static files
 	app.Static("/", "./public")
