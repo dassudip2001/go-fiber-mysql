@@ -29,6 +29,8 @@ func main() {
 
 	// add the metting room routes
 	route.RouteMettingRoom(app)
+	// add resources router
+	route.ResourceRouter(app)
 
 	// load the static files
 	app.Static("/", "./public")
