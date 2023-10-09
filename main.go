@@ -33,6 +33,8 @@ func main() {
 	route.ResourceRouter(app)
 	// add booking router
 	route.BookingRoute(app)
+	// services router
+	route.ServicesRoute(app)
 
 	// load the static files
 	app.Static("/", "./public")

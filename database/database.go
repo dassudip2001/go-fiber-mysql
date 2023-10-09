@@ -47,6 +47,7 @@ func ConnectDb() {
 	// add migrations here
 
 	db.AutoMigrate(&models.Category{}, &models.Product{}, &models.Location{}, &models.MettingRoom{}, &models.Resource{}, &models.Booking{})
+	db.AutoMigrate(&models.Catering{})
 	// db.AutoMigrate(&models.Category{})
 	// db.Migrator().DropTable(&models.Booking{})
 
