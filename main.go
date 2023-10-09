@@ -31,6 +31,8 @@ func main() {
 	route.RouteMettingRoom(app)
 	// add resources router
 	route.ResourceRouter(app)
+	// add booking router
+	route.BookingRoute(app)
 
 	// load the static files
 	app.Static("/", "./public")

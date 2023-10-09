@@ -46,9 +46,9 @@ func ConnectDb() {
 	log.Println("Run The Migrations")
 	// add migrations here
 
-	db.AutoMigrate(&models.Category{}, &models.Product{}, &models.Location{}, &models.MettingRoom{}, &models.Resource{})
+	db.AutoMigrate(&models.Category{}, &models.Product{}, &models.Location{}, &models.MettingRoom{}, &models.Resource{}, &models.Booking{})
 	// db.AutoMigrate(&models.Category{})
-	// db.Migrator().DropTable(&models.Resource{})
+	// db.Migrator().DropTable(&models.Booking{})
 
 	Database = DbInstance{Db: db}
 }
